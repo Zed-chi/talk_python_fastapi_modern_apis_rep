@@ -1,36 +1,38 @@
-from typing import Optional
-
 import fastapi
 import uvicorn
-import json
+from environs import Env 
+from starlette.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from api.views import weather
+
+env = Env()
+env.read_env()
+
 
 api = fastapi.FastAPI()
-
-@api.get("/api/calculate")
-def calculate(x:int=1, y:int=1, z:Optional[int]=None):
-    res = x+y
-    if z:
-        res+=z
-    return fastapi.Response(
-        content=json.dumps({"value": res}),
-        status_code=200 
-    ) 
+template_manager = Jinja2Templates(env.str("HTML_DIR", "templates"))
+api.mount(
+    "/static", StaticFiles(directory=env.str("ASSETS_DIR")), 
+    name="static"
+)
+api.include_router(weather.router)
 
 
 
 @api.get("/")
-def index():
-    body = """
-    <h1>Hello, this is a dump page</h1>
-    <a href='/api/calculate'>Test route with empty params</a>
-    <hr>
-    <a href='/api/calculate?x=1&y=2&z=3'>Test route with 1, 2, 3</a>
-    <hr>
-    <a href='/api/calculate?x=1&y=2'>Test route with 1, 2</a>
-    <hr>
-    """
-    return fastapi.responses.HTMLResponse(content=body) 
+def index(request:fastapi.Request):
+    return template_manager.TemplateResponse(
+        "./index.html", context={"request":request}
+)
+
+
+@api.get("/favicon.ico")
+def favicon():
+    return fastapi.responses.RedirectResponse(url="/static/icon.ico")
+
+
+
 
 
 if __name__ == "__main__":
-    uvicorn.run(api)
+    uvicorn.run(api, port=8000, host="127.0.0.1")
