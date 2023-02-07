@@ -3,7 +3,7 @@ import uvicorn
 from environs import Env 
 from starlette.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from api.views import weather
+from api.router import api_router
 
 env = Env()
 env.read_env()
@@ -15,9 +15,7 @@ api.mount(
     "/static", StaticFiles(directory=env.str("ASSETS_DIR")), 
     name="static"
 )
-api.include_router(weather.router)
-
-
+api.include_router(api_router)
 
 @api.get("/")
 def index(request:fastapi.Request):
@@ -29,9 +27,6 @@ def index(request:fastapi.Request):
 @api.get("/favicon.ico")
 def favicon():
     return fastapi.responses.RedirectResponse(url="/static/icon.ico")
-
-
-
 
 
 if __name__ == "__main__":
