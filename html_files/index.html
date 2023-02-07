@@ -6,12 +6,15 @@
 
 {% block content %}
     <h2>Usage</h2>
-    <form action="/api" method="get">
+    <form action="/api/weather" method="get">
         <label for="city">City</label>
         <input type="text" name="city" id="city">
         <hr>
         <label for="units">Units: metric or USA-like</label>
-        <input type="text" name="units" id="units">
+        <select name="units" id="unist">
+            <option value="m">Metric</option>
+            <option value="u">Other thing</option>
+        </select>
         <hr>
         <input type="submit" value="Get">
     </form>
