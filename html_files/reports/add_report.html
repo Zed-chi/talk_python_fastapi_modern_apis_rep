@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Add weather report
+{% endblock %}
+
+{% block content %}
+    <h2>Add weather report</h2>
+    <form action="/api/reports/add" method="post">
+        <label for="city">City</label>
+        <input type="text" name="city" id="city">
+        <hr>
+        <label for="description">description</label>
+        <input type="text" name="description" id="description">
+        <hr>
+        <input type="submit" value="Send">
+    </form>
+{% endblock %}
