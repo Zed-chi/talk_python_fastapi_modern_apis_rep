@@ -3,7 +3,7 @@ import uvicorn
 from environs import Env
 from fastapi.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
-
+from settings import HTML_DIR, ASSETS_DIR
 from api.router import api_router
 
 env = Env()
@@ -11,9 +11,9 @@ env.read_env()
 
 
 api = fastapi.FastAPI()
-template_manager = Jinja2Templates(env.str("HTML_DIR", "templates"))
+template_manager = Jinja2Templates(HTML_DIR)
 api.mount(
-    "/static", StaticFiles(directory=env.str("ASSETS_DIR")), name="static"
+    "/static", StaticFiles(directory=ASSETS_DIR), name="static"
 )
 api.include_router(api_router)
 
