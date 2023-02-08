@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+    <a href="/api/reports/">Add report</a>
     <h2>Usage</h2>
     <form action="/api/weather" method="get">
         <label for="city">City</label>
@@ -18,4 +19,11 @@
         <hr>
         <input type="submit" value="Get">
     </form>
+
+    <h3>Recent events</h3>
+    <ul>
+        {% for event in report %}
+        <li>{{event.location.city}}:{{event.description}}</li>
+        {% endfor %}
+    </ul>
 {% endblock %}
