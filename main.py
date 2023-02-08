@@ -2,26 +2,25 @@ import fastapi
 import uvicorn
 from environs import Env
 from fastapi.staticfiles import StaticFiles
-from starlette.templating import Jinja2Templates
-from settings import HTML_DIR, ASSETS_DIR
+
 from api.router import api_router
+from services.report_service import get_hour_report
+from settings import ASSETS_DIR, template_manager
 
 env = Env()
 env.read_env()
 
 
 api = fastapi.FastAPI()
-template_manager = Jinja2Templates(HTML_DIR)
-api.mount(
-    "/static", StaticFiles(directory=ASSETS_DIR), name="static"
-)
+api.mount("/static", StaticFiles(directory=ASSETS_DIR), name="static")
 api.include_router(api_router)
 
 
-@api.get("/")
+@api.get("/", name="index")
 def index(request: fastapi.Request):
+    report = get_hour_report()
     return template_manager.TemplateResponse(
-        "./index.html", context={"request": request}
+        "./index.html", context={"request": request, "report": report}
     )
 
 
